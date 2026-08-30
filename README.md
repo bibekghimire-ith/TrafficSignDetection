@@ -19,6 +19,8 @@ distribution (some classes have 2,000 training images, others 200).
 | Path | What it is |
 |---|---|
 | `Project_Walkthrough.ipynb` | **Start here** — the whole project step by step, with the maths opened up |
+| `SETUP.md` | Install, run and troubleshoot: Docker and native, hardware specs, dataset links |
+| `REPORT.md` | Project report in research-paper form — methodology, experimental design, references |
 | `src/dataset.py` | GTSRB download, extraction, decoding, preprocessing, splitting, encoding |
 | `src/ffnn.py` | The network: init, forward, cost, backward, optimizers, train, predict |
 | `src/model_utils.py` | Activations, mini-batching, metrics, confusion matrix, plots, save/load |
@@ -28,12 +30,23 @@ distribution (some classes have 2,000 training images, others 200).
 | `predict.py` | Classify image files from the command line |
 | `gui.py` | Tkinter app: open a photo, see the preprocessed crop and the top-2 prediction |
 | `augment.py` | Generate augmented training batches offline |
+| `Dockerfile`, `docker-compose.yml` | Reproducible container: CLI plus Jupyter on `localhost:8888` |
 
 `dataset/` and `models/` hold data and trained weights and are gitignored.
 
 ---
 
 ## Quick start
+
+**Docker** — reproducible, installs nothing but Docker:
+
+```bash
+docker compose up                                    # Jupyter at localhost:8888
+docker compose run --rm tsd python train.py --epochs 40
+docker compose run --rm tsd python evaluate.py --no-plot
+```
+
+**Native Python** — needed for the desktop GUI, and faster:
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
@@ -49,18 +62,23 @@ python evaluate.py --model models/gtsrb_mlp
 python gui.py --model models/gtsrb_mlp
 ```
 
-The first `train.py` run downloads ~300 MB of GTSRB archives, extracts them and
-decodes ~52,000 `.ppm` files. Decoding takes a few minutes; the result is
-cached in `dataset/gtsrb/gtsrb_32.npz` and every later run loads in seconds.
+Full instructions, hardware requirements and troubleshooting: **[SETUP.md](SETUP.md)**.
 
-If the download is blocked on your network, fetch these three files by hand and
-drop them in `dataset/gtsrb/`, then rerun:
+The first `train.py` run downloads ~280 MB of GTSRB archives, extracts them and
+decodes 51,839 `.ppm` files. Decoding is disk-bound — well under a minute on an
+SSD — and the result is cached in `dataset/gtsrb/gtsrb_32.npz`, so every later
+run loads in seconds. Budget about 2 GB of free disk.
 
-- `GTSRB_Final_Training_Images.zip`
-- `GTSRB_Final_Test_Images.zip`
-- `GTSRB_Final_Test_GT.zip`
+A full 40-epoch training run takes roughly 5 minutes and peaks around 820 MB of
+RAM. There is no GPU path; this is NumPy on the CPU throughout. See
+[SETUP.md](SETUP.md) for measured figures and the full requirements.
 
-The URLs are listed in `GTSRB_URLS` at the top of `src/dataset.py`.
+If the download is blocked on your network, fetch the three archives by hand
+from the [official benchmark page](https://benchmark.ini.rub.de/gtsrb_dataset.html)
+and drop them in `dataset/gtsrb/`; the loader detects them and skips the
+download. Direct links and mirrors are in
+[SETUP.md § The dataset](SETUP.md#2-the-dataset), and the exact URLs the code
+uses are in `GTSRB_URLS` at the top of `src/dataset.py`.
 
 ---
 
@@ -274,7 +292,10 @@ matplotlib  training curves, confusion matrix, sample grids
 ```
 
 `gui.py` also needs Tkinter, which ships with most Python installs (on Debian
-and Ubuntu: `sudo apt install python3-tk`).
+and Ubuntu: `sudo apt install python3-tk`; on Homebrew Python: `brew install
+python-tk`). `Project_Walkthrough.ipynb` needs `notebook`.
+
+Or skip all of it and use the container — see [SETUP.md](SETUP.md).
 
 ---
 

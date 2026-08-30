@@ -1,0 +1,24 @@
+# docker compose up                                  -> Jupyter at localhost:8888
+# docker compose run --rm tsd python train.py ...     -> one-off command
+# docker compose run --rm tsd bash                    -> interactive shell
+services:
+  tsd:
+    build: .
+    image: traffic-sign-detection:latest
+    container_name: traffic-sign-detection
+    ports:
+      - "8888:8888"
+    volumes:
+      # Bind mounts, not named volumes: the downloaded dataset and the trained
+      # models stay visible on the host, so they survive `docker compose down`
+      # and you can open a model with the native gui.py.
+      - ./dataset:/app/dataset
+      - ./models:/app/models
+      # Live-edit the code and notebook without rebuilding the image
+      - ./src:/app/src
+      - ./Project_Walkthrough.ipynb:/app/Project_Walkthrough.ipynb
+    # Training is a single long-lived NumPy process; without a raised limit a
+    # constrained Docker Desktop VM will OOM-kill it on the full dataset.
+    shm_size: "1gb"
+    stdin_open: true
+    tty: true

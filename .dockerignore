@@ -1,0 +1,17 @@
+# Never send these to the build context -- the dataset alone is hundreds of MB
+# and would make every build crawl.
+dataset/
+models/
+temp/
+
+.git/
+.gitignore
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store
+Dockerfile
+docker-compose.yml
+.dockerignore
