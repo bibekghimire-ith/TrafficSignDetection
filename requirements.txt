@@ -1,0 +1,8 @@
+# Core: the network itself is pure NumPy, everything else is I/O and plotting.
+numpy>=1.19
+Pillow>=8.0
+scipy>=1.5          # ndimage: rotate / shift / gaussian_filter for augmentation
+matplotlib>=3.3     # training curves, confusion matrix, sample grids
+
+# Optional -- only needed to run Project_Walkthrough.ipynb
+# notebook>=6.0

@@ -1,0 +1,17 @@
+# data and trained artefacts
+dataset/gtsrb/
+dataset/augmented/
+dataset/augmented_data/
+models/*
+!models/.gitkeep
+temp/
+
+# python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# os
+.DS_Store
