@@ -1,0 +1,6 @@
+== e5_augmented_s1: --use-augmented
+ Accuracy 		  0.90823
+== e5_augmented_s2: --use-augmented
+ Accuracy 		  0.90800
+== e5_augmented_s3: --use-augmented
+ Accuracy 		  0.91006

@@ -33,6 +33,8 @@ def parse_args():
     p.add_argument("--batch-size", type=int, default=512,
                    help="images processed per chunk, to bound memory use")
     p.add_argument("--seed", type=int, default=1)
+    p.add_argument("--split", choices=["track", "random"], default="track",
+                   help="must match the --split used by train.py so the dev set is not augmented")
     return p.parse_args()
 
 
@@ -40,9 +42,11 @@ def main():
     args = parse_args()
     np.random.seed(args.seed)
 
-    train_x_orig, train_y_orig, _, _ = load_dataset(size_in_per=args.sample)
-    # augment only the training split; the dev set must stay untouched
-    train_x, train_y, _, _ = train_dev_split(train_x_orig, train_y_orig)
+    train_x_orig, train_y_orig, _, _, tracks = load_dataset(size_in_per=args.sample, return_tracks=True)
+    # augment only the training split; the dev set must stay untouched. Same seed + same split mode
+    # as train.py reproduces exactly the same partition.
+    train_x, train_y, _, _ = train_dev_split(train_x_orig, train_y_orig,
+                                             tracks=tracks if args.split == "track" else None)
 
     print("Augmenting %d training images (%d pass(es))..."
           % (train_x.shape[0], args.aug_count))

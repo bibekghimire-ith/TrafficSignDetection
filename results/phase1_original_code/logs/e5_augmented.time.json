@@ -1,0 +1,1 @@
+{"cmd": ["python", "-u", "train_lowmem.py", "--epochs", "40", "--no-plot", "--out", "models/e5_augmented", "--use-augmented"], "rc": 0, "wall_s": 1536.01, "peak_rss_mb": 3604.8}

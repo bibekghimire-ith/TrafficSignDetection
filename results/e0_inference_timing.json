@@ -1,0 +1,9 @@
+{
+ "dtype": "float32",
+ "batch_repeats": 7,
+ "batch_median_s": 0.0998632760001783,
+ "batch_us_per_image_median": 7.906831037227104,
+ "single_image_n": 1000,
+ "single_image_median_us": 58.498499583947705,
+ "single_image_p95_us": 112.08465025447366
+}

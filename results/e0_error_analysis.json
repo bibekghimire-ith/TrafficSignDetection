@@ -1,0 +1,184 @@
+{
+ "n_seeds": 3,
+ "roi_side_px_median_correct": 33.49626844888845,
+ "roi_side_px_median_wrong": 22.494443758403985,
+ "acc_by_roi_size": [
+  {
+   "roi_px": "0\u201330",
+   "n": 5576,
+   "acc_mean": 0.7991391678622669,
+   "acc_sd": 0.00809417797445965
+  },
+  {
+   "roi_px": "30\u201340",
+   "n": 2714,
+   "acc_mean": 0.9347826086956522,
+   "acc_sd": 0.006476932878130751
+  },
+  {
+   "roi_px": "40\u201350",
+   "n": 1623,
+   "acc_mean": 0.953378517149312,
+   "acc_sd": 0.0014229211809972046
+  },
+  {
+   "roi_px": "50\u201370",
+   "n": 1621,
+   "acc_mean": 0.9611351017890191,
+   "acc_sd": 0.0018507094386181477
+  },
+  {
+   "roi_px": "70\u2013max",
+   "n": 1096,
+   "acc_mean": 0.903588807785888,
+   "acc_sd": 0.0120470208761182
+  }
+ ],
+ "acc_by_sharpness_quartile": [
+  {
+   "quartile": 1,
+   "n": 3158,
+   "acc_mean": 0.7932235592146929,
+   "acc_sd": 0.012618656646720253
+  },
+  {
+   "quartile": 2,
+   "n": 3157,
+   "acc_mean": 0.8954703832752613,
+   "acc_sd": 0.005328667672239696
+  },
+  {
+   "quartile": 3,
+   "n": 3157,
+   "acc_mean": 0.8891352549889135,
+   "acc_sd": 0.006859806090499746
+  },
+  {
+   "quartile": 4,
+   "n": 3158,
+   "acc_mean": 0.9340299767785517,
+   "acc_sd": 0.002334108548395191
+  }
+ ],
+ "top2_gain_by_class": [
+  {
+   "class": 32,
+   "name": "End of all limits",
+   "top1": 0.7777777777777778,
+   "top2": 1.0,
+   "gain": 0.2222222222222222
+  },
+  {
+   "class": 21,
+   "name": "Double curve",
+   "top1": 0.6888888888888889,
+   "top2": 0.8666666666666667,
+   "gain": 0.1777777777777778
+  },
+  {
+   "class": 26,
+   "name": "Traffic signals",
+   "top1": 0.7129629629629629,
+   "top2": 0.8462962962962963,
+   "gain": 0.13333333333333341
+  },
+  {
+   "class": 19,
+   "name": "Dangerous curve left",
+   "top1": 0.5611111111111111,
+   "top2": 0.6833333333333333,
+   "gain": 0.12222222222222223
+  },
+  {
+   "class": 5,
+   "name": "Speed limit 80",
+   "top1": 0.780952380952381,
+   "top2": 0.8915343915343915,
+   "gain": 0.11058201058201056
+  },
+  {
+   "class": 40,
+   "name": "Roundabout mandatory",
+   "top1": 0.8629629629629629,
+   "top2": 0.9666666666666667,
+   "gain": 0.10370370370370374
+  },
+  {
+   "class": 20,
+   "name": "Dangerous curve right",
+   "top1": 0.6666666666666666,
+   "top2": 0.7666666666666667,
+   "gain": 0.10000000000000009
+  },
+  {
+   "class": 29,
+   "name": "Bicycles crossing",
+   "top1": 0.8407407407407408,
+   "top2": 0.9407407407407408,
+   "gain": 0.09999999999999998
+  },
+  {
+   "class": 18,
+   "name": "General caution",
+   "top1": 0.7837606837606838,
+   "top2": 0.8735042735042735,
+   "gain": 0.08974358974358976
+  },
+  {
+   "class": 28,
+   "name": "Children crossing",
+   "top1": 0.7755555555555556,
+   "top2": 0.8644444444444445,
+   "gain": 0.0888888888888889
+  }
+ ],
+ "total_errors_all_seeds": 4624,
+ "group_confusions": {
+  "speed_limits_0_8": {
+   "errors_true_in_group": 2070,
+   "errors_within_group": 1663
+  },
+  "triangular_warning_18_31": {
+   "errors_true_in_group": 1627,
+   "errors_within_group": 1340
+  },
+  "blue_mandatory_33_40": {
+   "errors_true_in_group": 273,
+   "errors_within_group": 83
+  },
+  "end_of_restriction_6_32_41_42": {
+   "errors_true_in_group": 285,
+   "errors_within_group": 113
+  }
+ },
+ "confidence_rejection": [
+  {
+   "threshold": 0.5,
+   "coverage": 0.914937978358406,
+   "acc_on_accepted": 0.9313756598494245,
+   "errors_rejected": 0.48551038062283736,
+   "correct_rejected": 0.02939938676125774
+  },
+  {
+   "threshold": 0.7,
+   "coverage": 0.8432040116125626,
+   "acc_on_accepted": 0.963253935960437,
+   "errors_rejected": 0.7461072664359861,
+   "correct_rejected": 0.0748812601454939
+  },
+  {
+   "threshold": 0.8,
+   "coverage": 0.805515967273687,
+   "acc_on_accepted": 0.9754595196749779,
+   "errors_rejected": 0.8380190311418685,
+   "correct_rejected": 0.10503216497324595
+  },
+  {
+   "threshold": 0.9,
+   "coverage": 0.7510160992346265,
+   "acc_on_accepted": 0.9874191734607816,
+   "errors_rejected": 0.9225778546712803,
+   "correct_rejected": 0.15535381470570553
+  }
+ ]
+}

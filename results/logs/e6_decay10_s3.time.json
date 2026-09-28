@@ -1,0 +1,1 @@
+{"cmd": ["python", "-u", "train.py", "--epochs", "40", "--no-plot", "--seed", "3", "--out", "models/e6_decay10_s3", "--step-decay", "10"], "rc": 0, "wall_s": 212.91, "peak_rss_mb": 646.2}

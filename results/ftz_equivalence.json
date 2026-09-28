@@ -1,0 +1,10 @@
+{
+ "reference": "models/e0_baseline_s1 (trained before the flush)",
+ "candidate": "E0 seed 1 retrained with the flush",
+ "max_abs_param_diff": 0.0,
+ "identical_dev_accuracy_history": true,
+ "epochs": [
+  14,
+  14
+ ]
+}

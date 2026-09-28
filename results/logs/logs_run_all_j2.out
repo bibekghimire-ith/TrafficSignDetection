@@ -1,0 +1,46 @@
+== e0_baseline_s3: 
+ Accuracy 		  0.87981
+== e1_random_s3: --initialization random
+ Accuracy 		  0.88836
+== e2_mgd_s3: --optimizer mgd
+ Accuracy 		  0.70277
+== e2_bgd_s2: --optimizer bgd
+ Accuracy 		  0.04228
+== e3_dropout_0.6_s2: --keep-prob 0.6
+ Accuracy 		  0.84766
+== e3_dropout_0.7_s2: --keep-prob 0.7
+ Accuracy 		  0.88599
+== e3_dropout_0.9_s2: --keep-prob 0.9
+ Accuracy 		  0.84513
+== e3_dropout_0.9_s3: --keep-prob 0.9
+ Accuracy 		  0.88258
+== e3_l2_3_s2: --regularizer l2 --lambd 3
+ Accuracy 		  0.87720
+== e3_l2_10_s3: --regularizer l2 --lambd 10
+ Accuracy 		  0.83230
+== e3_l2_30_s1: --regularizer l2 --lambd 30
+ Accuracy 		  0.84584
+== e3_l2_30_s2: --regularizer l2 --lambd 30
+ Accuracy 		  0.86120
+== e3_none_s1: --regularizer none
+ Accuracy 		  0.85416
+== e3_none_s2: --regularizer none
+ Accuracy 		  0.84719
+== e3_none_s3: --regularizer none
+ Accuracy 		  0.86112
+== e4_256_s1: --hidden 256
+ Accuracy 		  0.86445
+== e4_256_s2: --hidden 256
+ Accuracy 		  0.86762
+== e4_256_s3: --hidden 256
+ Accuracy 		  0.87664
+== e4_1024_512_256_s1: --hidden 1024 512 256
+ Accuracy 		  0.87371
+== e4_1024_512_256_s2: --hidden 1024 512 256
+ Accuracy 		  0.88044
+== e4_1024_512_256_128_s1: --hidden 1024 512 256 128
+ Accuracy 		  0.87023
+== e4_1024_512_256_128_s2: --hidden 1024 512 256 128
+ Accuracy 		  0.87237
+== e6_decay10_s3: --step-decay 10
+ Accuracy 		  0.89897

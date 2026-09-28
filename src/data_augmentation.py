@@ -315,12 +315,14 @@ def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = Fal
 
 # ===================================================( Generate Minibatches )===================================================
 def generate_minibatches(X, Y, minibatch_size=64, seed=1):
-    np.random.seed(seed)  # varying the seed value so that the minibatchs become random in each epoch
+    # private generator: re-seeding the global RNG here (as before) made every augmentation pass draw the
+    # same random transforms whatever --seed was
+    rng = np.random.RandomState(seed)
     m = Y.shape[0]  # number of training examples
     minibatches = []
 
     # Shuffle (X, Y)
-    permutation = list(np.random.permutation(m))
+    permutation = rng.permutation(m)
     shuffled_X = X[permutation, :, :]
     shuffled_Y = Y[permutation, :]
 
@@ -367,30 +369,32 @@ def save_generated_data(path, batch_no, data):
         pickle.dump(data, output_file)
 # =========================================================================================================== 
 def load_augmented_data():
-    path = "dataset/augmented_data/"
-    
-    if not os.path.exists(path):
-            raise ValueError("Given folder doesnot exist")
+    """Load and consume every batch written by ``data_generator`` (each file is deleted after it is read).
 
-    file_names = get_files(path)
-    for ind,file in enumerate(file_names):
+    Raises a clear error when the folder is missing or holds no readable batch; the previous version fell
+    through to an UnboundLocalError on an empty folder and a NameError after a failed read.
+    """
+    path = "dataset/augmented_data/"
+
+    if not os.path.exists(path):
+        raise ValueError("Given folder doesnot exist: run augment.py first")
+
+    images, labels = [], []
+    for file in get_files(path):
         fname = path + file
         try:
             with open(fname, 'rb') as input_file:
                 image_batch, label_batch = pickle.load(input_file)
-                os.remove(fname)
-        except(OSError, IOError) as e:
-            print(e)
+        except (OSError, IOError, pickle.UnpicklingError, EOFError) as e:
+            print("skipping unreadable augmented batch %s: %s" % (fname, e))
+            continue
+        os.remove(fname)
+        images.append(image_batch)
+        labels.append(label_batch)
 
-        if ind == 0:
-            aug_images = image_batch
-            aug_labels = label_batch
-        else:
-            aug_images = np.concatenate((aug_images, image_batch), axis = 1)
-            aug_labels = np.concatenate((aug_labels, label_batch), axis = 1)
-        
-        del image_batch, label_batch
-    return aug_images, aug_labels
+    if not images:
+        raise ValueError("No augmented batches in %s (they are deleted after use): run augment.py again" % path)
+    return np.concatenate(images, axis = 1), np.concatenate(labels, axis = 1)
 # =========================================================================================================== 
 def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, pre_process_data = False):
     #initializing the variables
@@ -404,8 +408,8 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
         seed += 1
         time_augmented = 0
         batch_times = []
-        aug_images = np.copy(X_orig[0:1,:,:])
-        aug_labels = np.copy(Y_orig[0:1,:])
+        # collect the chunks and concatenate once (the previous per-batch np.concatenate was quadratic)
+        aug_image_chunks, aug_label_chunks = [], []
       
         if verbose > 0:
             print("\nAugmentation Count %d/%d"%(i,aug_count))
@@ -426,8 +430,8 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
                                                              blur = True,
                                                              zoom = True)
             
-            aug_images = np.concatenate((aug_images, aug_images_batch), axis = 0)
-            aug_labels = np.concatenate((aug_labels, aug_labels_batch), axis = 0)
+            aug_image_chunks.append(aug_images_batch)
+            aug_label_chunks.append(aug_labels_batch)
             
             
             if verbose > 1:
@@ -443,10 +447,13 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
                 print ("%d/%d [%s>%s %.0f%%] - %.2fs"%(ind+1, total_minibatches, '=' * inc,'.'*(20-inc), per, time_augmented),end='\r')
             
         #----------------------------------------------batch ends-------------------------------------------
+        aug_images = np.concatenate(aug_image_chunks, axis = 0)
+        aug_labels = np.concatenate(aug_label_chunks, axis = 0)
+        del aug_image_chunks, aug_label_chunks
         if pre_process_data:
-            aug_data = prep_dataset(aug_images[1:], aug_labels[1:], num_class = NUM_CLASSES)
+            aug_data = prep_dataset(aug_images, aug_labels, num_class = NUM_CLASSES)
         else:    
-            aug_data = (aug_images[1:], aug_labels[1:])
+            aug_data = (aug_images, aug_labels)
 
         save_generated_data(path, batch_no = i, data = aug_data)
         del aug_data,aug_images,aug_labels

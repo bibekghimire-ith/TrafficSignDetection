@@ -38,7 +38,13 @@ def parse_args():
     p.add_argument("--patience", type=int, default=5,
                    help="early stopping patience in epochs; 0 disables it")
     p.add_argument("--step-decay", type=int, default=0,
-                   help="apply learning rate decay every N epochs; 0 disables it")
+                   help="multiply the learning rate by --decay-gamma every N epochs; 0 disables it")
+    p.add_argument("--decay-gamma", type=float, default=0.5,
+                   help="step-decay factor (default 0.5: halve the learning rate)")
+    p.add_argument("--l2-norm", choices=["dataset", "batch"], default="dataset",
+                   help="divide lambda by the training-set size (default) or the mini-batch size (original behaviour)")
+    p.add_argument("--split", choices=["track", "random"], default="track",
+                   help="dev split: hold out whole physical-sign tracks (default) or random frames (original)")
     p.add_argument("--seed", type=int, default=1)
     p.add_argument("--out", default="models/gtsrb_mlp",
                    help="path the trained model is written to")
@@ -53,8 +59,10 @@ def main():
     np.random.seed(args.seed)
 
     # ---- 1. load and split ----------------------------------------------------
-    train_x_orig, train_y_orig, test_x_orig, test_y_orig = load_dataset(size_in_per=args.sample)
-    train_x, train_y, dev_x, dev_y = train_dev_split(train_x_orig, train_y_orig)
+    train_x_orig, train_y_orig, test_x_orig, test_y_orig, tracks = load_dataset(
+        size_in_per=args.sample, return_tracks=True)
+    train_x, train_y, dev_x, dev_y = train_dev_split(
+        train_x_orig, train_y_orig, tracks=tracks if args.split == "track" else None)
 
     print("\nSet\t\tImages\t\t\tLabels")
     print("=" * 60)
@@ -101,6 +109,9 @@ def main():
         verbose=3,
         patience=args.patience or None,
         step_decay=args.step_decay or None,
+        seed=args.seed,
+        decay_gamma=args.decay_gamma,
+        l2_norm=args.l2_norm,
     )
 
     # ---- 5. persist -----------------------------------------------------------
@@ -113,6 +124,11 @@ def main():
         "hyper_params": hyper_params,
         "optimizer": args.optimizer,
         "regularizer": regularizer,
+        "seed": args.seed,
+        "split": args.split,
+        "l2_norm": args.l2_norm,
+        "step_decay": args.step_decay,
+        "decay_gamma": args.decay_gamma,
         "history": {k: history[k] for k in
                     ("accuracy", "loss", "val_accuracy", "val_loss")},
     }

@@ -1,0 +1,11 @@
+count,true,true_name,pred,pred_name
+50,3,Speed limit 60,5,Speed limit 80
+46,18,General caution,26,Traffic signals
+42,1,Speed limit 30,2,Speed limit 50
+36,5,Speed limit 80,2,Speed limit 50
+35,2,Speed limit 50,5,Speed limit 80
+28,4,Speed limit 70,1,Speed limit 30
+27,8,Speed limit 120,7,Speed limit 100
+26,42,End of no passing >3.5t,41,End of no passing
+26,27,Pedestrians,21,Double curve
+25,25,Road work,31,Wild animals crossing

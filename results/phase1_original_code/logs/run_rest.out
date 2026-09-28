@@ -1,0 +1,32 @@
+== e1_random: --initialization random
+ Accuracy 		  0.88401
+== e2_mgd: --optimizer mgd
+ Accuracy 		  0.70277
+== e2_bgd: --optimizer bgd
+ Accuracy 		  0.00705
+== e3_dropout_0.6: --keep-prob 0.6
+ Accuracy 		  0.88171
+== e3_dropout_0.7: --keep-prob 0.7
+ Accuracy 		  0.89240
+== e3_dropout_0.9: --keep-prob 0.9
+ Accuracy 		  0.88591
+== e3_l2_0.1: --regularizer l2 --lambd 0.1
+ Accuracy 		  0.86706
+== e3_l2_0.4: --regularizer l2 --lambd 0.4
+ Accuracy 		  0.85170
+== e3_l2_0.7: --regularizer l2 --lambd 0.7
+ Accuracy 		  0.84822
+== e3_l2_1.0: --regularizer l2 --lambd 1.0
+ Accuracy 		  0.83943
+== e3_none: --regularizer none
+ Accuracy 		  0.86983
+== e4_256: --hidden 256
+ Accuracy 		  0.87522
+== e4_1024_512_256: --hidden 1024 512 256
+ Accuracy 		  0.87561
+== e4_1024_512_256_128: --hidden 1024 512 256 128
+ Accuracy 		  0.88963
+== e6_decay10: --step-decay 10
+ Accuracy 		  0.89208
+== e5_augmented: --use-augmented
+Could not read a model from 'models/e5_augmented'. Train one first.

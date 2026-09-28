@@ -1,0 +1,28 @@
+== e0_baseline_s1: 
+ Accuracy 		  0.87237
+== e1_random_s1: --initialization random
+ Accuracy 		  0.87949
+== e2_mgd_s1: --optimizer mgd
+ Accuracy 		  0.69818
+== e2_mgd_lr0.05_s1: --optimizer mgd --lr 0.05
+ Accuracy 		  0.87767
+== e2_bgd_s1: --optimizer bgd
+ Accuracy 		  0.05321
+== e3_dropout_0.6_s1: --keep-prob 0.6
+ Accuracy 		  0.86215
+== e3_dropout_0.7_s1: --keep-prob 0.7
+== e0_baseline_s1 exists, skipping
+== e1_random_s1 exists, skipping
+== e2_mgd_s1 exists, skipping
+== e2_mgd_lr0.05_s1 exists, skipping
+== e2_bgd_s1 exists, skipping
+== e3_dropout_0.6_s1 exists, skipping
+== e3_dropout_0.7_s1: --keep-prob 0.7
+ Accuracy 		  0.87672
+== e3_dropout_0.9_s1: --keep-prob 0.9
+ Accuracy 		  0.85907
+== e3_l2_1_s1: --regularizer l2 --lambd 1
+ Accuracy 		  0.85606
+== e3_l2_3_s1: --regularizer l2 --lambd 3
+ Accuracy 		  0.85107
+== e3_l2_10_s1: --regularizer l2 --lambd 10

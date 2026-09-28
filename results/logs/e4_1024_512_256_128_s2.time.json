@@ -1,0 +1,1 @@
+{"cmd": ["python", "-u", "train.py", "--epochs", "40", "--no-plot", "--seed", "2", "--out", "models/e4_1024_512_256_128_s2", "--hidden", "1024", "512", "256", "128"], "rc": 0, "wall_s": 314.24, "peak_rss_mb": 654.4}

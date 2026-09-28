@@ -1,0 +1,176 @@
+{
+ "roi_side_px_median_correct": 33.49626844888845,
+ "roi_side_px_median_wrong": 22.978250586152114,
+ "sharpness_median_correct": 4027.5568265432103,
+ "sharpness_median_wrong": 2871.891811728395,
+ "acc_by_roi_size": [
+  {
+   "roi_px": "0\u201330",
+   "n": 5576,
+   "acc": 0.812948350071736
+  },
+  {
+   "roi_px": "30\u201340",
+   "n": 2714,
+   "acc": 0.9369933677229182
+  },
+  {
+   "roi_px": "40\u201350",
+   "n": 1623,
+   "acc": 0.9513247073321011
+  },
+  {
+   "roi_px": "50\u201370",
+   "n": 1621,
+   "acc": 0.9599012954966071
+  },
+  {
+   "roi_px": "70\u2013max",
+   "n": 1096,
+   "acc": 0.9087591240875912
+  }
+ ],
+ "acc_by_sharpness_quartile": [
+  {
+   "sharpness_quartile": 1,
+   "n": 3158,
+   "acc": 0.8062064597846739
+  },
+  {
+   "sharpness_quartile": 2,
+   "n": 3157,
+   "acc": 0.893569844789357
+  },
+  {
+   "sharpness_quartile": 3,
+   "n": 3157,
+   "acc": 0.8964206525182135
+  },
+  {
+   "sharpness_quartile": 4,
+   "n": 3158,
+   "acc": 0.94205193160228
+  }
+ ],
+ "top2_gain_by_class": [
+  {
+   "class": 42,
+   "name": "End of no passing >3.5t",
+   "top1": 0.6888888888888889,
+   "top2": 0.8888888888888888,
+   "gain": 0.19999999999999996
+  },
+  {
+   "class": 0,
+   "name": "Speed limit 20",
+   "top1": 0.6,
+   "top2": 0.7333333333333333,
+   "gain": 0.1333333333333333
+  },
+  {
+   "class": 31,
+   "name": "Wild animals crossing",
+   "top1": 0.8296296296296296,
+   "top2": 0.9518518518518518,
+   "gain": 0.12222222222222223
+  },
+  {
+   "class": 18,
+   "name": "General caution",
+   "top1": 0.6512820512820513,
+   "top2": 0.764102564102564,
+   "gain": 0.11282051282051275
+  },
+  {
+   "class": 26,
+   "name": "Traffic signals",
+   "top1": 0.7222222222222222,
+   "top2": 0.8222222222222222,
+   "gain": 0.09999999999999998
+  },
+  {
+   "class": 21,
+   "name": "Double curve",
+   "top1": 0.8555555555555555,
+   "top2": 0.9444444444444444,
+   "gain": 0.0888888888888889
+  },
+  {
+   "class": 8,
+   "name": "Speed limit 120",
+   "top1": 0.8022222222222222,
+   "top2": 0.8822222222222222,
+   "gain": 0.08000000000000007
+  },
+  {
+   "class": 20,
+   "name": "Dangerous curve right",
+   "top1": 0.6888888888888889,
+   "top2": 0.7666666666666667,
+   "gain": 0.07777777777777783
+  },
+  {
+   "class": 24,
+   "name": "Road narrows on right",
+   "top1": 0.7555555555555555,
+   "top2": 0.8333333333333334,
+   "gain": 0.07777777777777783
+  },
+  {
+   "class": 5,
+   "name": "Speed limit 80",
+   "top1": 0.8714285714285714,
+   "top2": 0.9492063492063492,
+   "gain": 0.07777777777777772
+  }
+ ],
+ "confidence_rejection": [
+  {
+   "threshold": 0.5,
+   "coverage": 0.9252573238321457,
+   "acc_on_accepted": 0.9317131610474072,
+   "errors_rejected": 0.45267489711934156,
+   "correct_rejected": 0.025420694593626926
+  },
+  {
+   "threshold": 0.7,
+   "coverage": 0.8610451306413301,
+   "acc_on_accepted": 0.9624827586206897,
+   "errors_rejected": 0.720164609053498,
+   "correct_rejected": 0.06310418904403867
+  },
+  {
+   "threshold": 0.8,
+   "coverage": 0.8247030878859858,
+   "acc_on_accepted": 0.9735983102918587,
+   "errors_rejected": 0.8113854595336076,
+   "correct_rejected": 0.0922842821339062
+  },
+  {
+   "threshold": 0.9,
+   "coverage": 0.7774346793349168,
+   "acc_on_accepted": 0.9842142784397596,
+   "errors_rejected": 0.8936899862825789,
+   "correct_rejected": 0.13498030791263874
+  }
+ ],
+ "group_confusions": {
+  "speed_limits_0_8": {
+   "errors_true_in_group": 630,
+   "errors_within_group": 493
+  },
+  "triangular_warning_18_31": {
+   "errors_true_in_group": 540,
+   "errors_within_group": 468
+  },
+  "blue_mandatory_33_40": {
+   "errors_true_in_group": 73,
+   "errors_within_group": 24
+  },
+  "end_of_restriction_6_32_41_42": {
+   "errors_true_in_group": 110,
+   "errors_within_group": 61
+  }
+ },
+ "total_errors": 1458
+}

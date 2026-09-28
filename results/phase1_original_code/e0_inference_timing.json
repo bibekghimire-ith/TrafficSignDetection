@@ -1,0 +1,10 @@
+{
+ "batch_repeats": 7,
+ "batch_median_s": 0.18112658700010797,
+ "batch_us_per_image_median": 14.34098076010356,
+ "batch_us_per_image_min": 14.085473950913762,
+ "batch_us_per_image_max": 16.585616072888946,
+ "single_image_n": 1000,
+ "single_image_median_us": 154.47649957422982,
+ "single_image_p95_us": 195.14074965627512
+}

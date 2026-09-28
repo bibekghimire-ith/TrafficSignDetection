@@ -1,0 +1,11 @@
+count_over_seeds,mean_per_seed,true,true_name,pred,pred_name
+150,50.0,5,Speed limit 80,2,Speed limit 50
+106,35.333333333333336,1,Speed limit 30,2,Speed limit 50
+102,34.0,3,Speed limit 60,5,Speed limit 80
+82,27.333333333333332,7,Speed limit 100,8,Speed limit 120
+80,26.666666666666668,26,Traffic signals,18,General caution
+75,25.0,2,Speed limit 50,5,Speed limit 80
+75,25.0,4,Speed limit 70,1,Speed limit 30
+69,23.0,18,General caution,26,Traffic signals
+62,20.666666666666668,27,Pedestrians,21,Double curve
+59,19.666666666666668,7,Speed limit 100,5,Speed limit 80

@@ -57,7 +57,7 @@ def init_layers(input_shape, output_shape, hidden_layers):
 
 #====================================================================================================================
 # initializing parameters
-def init_parameters(layers_dim, initialization = "random"):
+def init_parameters(layers_dim, initialization = "random", dtype = np.float32):
     """Initializes the parameters (W,b) for each layer.
         
         Arguments:
@@ -99,6 +99,8 @@ def init_parameters(layers_dim, initialization = "random"):
         
         #initializing biases
         params['b' + str(l)] = np.zeros((layers_dim[l],1))
+        params['W' + str(l)] = params['W' + str(l)].astype(dtype)
+        params['b' + str(l)] = params['b' + str(l)].astype(dtype)
      
         assert(params['W' + str(l)].shape == (layers_dim[l],layers_dim[l-1])), "Dimention of W mismatched in init_params function"
         assert(params['b' + str(l)].shape == (layers_dim[l],1)), "Dimention of b mismatched in init_params function"
@@ -212,10 +214,9 @@ def forward_activation(A_prev,W,b,activation):
 # dropout for individual layer
 def forward_dropout(A,keep_probs):
      #implementing dropout
-    D = np.random.rand(A.shape[0],A.shape[1])
-    D = (D < keep_probs).astype(int)
-    A = np.multiply(A,D)
-    A = np.divide(A,keep_probs)
+    D = (np.random.rand(A.shape[0],A.shape[1]) < keep_probs).astype(A.dtype)
+    A = A * D
+    A /= keep_probs
     
     dropout_mask = D
     
@@ -288,7 +289,7 @@ def forward_prop(X, parameters, keep_probs = [], regularizer = None):
     
 #====================================================================================================================
 # compute Cross entropy cost
-def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None, from_logits = False ):
+def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None, from_logits = False, l2_m = None):
     """
     
     
@@ -332,7 +333,10 @@ def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None, fro
             _,W,_ = sum_cache
             norm += np.sum(np.square(W))
 
-        L2_cost = (lambd/(2*m)) * norm 
+        # l2_m: the number the L2 strength is divided by. The original code always used the mini-batch
+        # size, which makes the effective decay depend on batch size; train() now passes the training-set
+        # size so that lambda has the same meaning for every optimizer and batch size.
+        L2_cost = (lambd/(2*(l2_m if l2_m else m))) * norm 
         cost = cost + L2_cost
     else:
         pass
@@ -347,7 +351,7 @@ def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None, fro
 # Back Propagation
 #-------------------------------------------------------------------------------------------------------------------
 ## calculating backward gradient
-def backward_grad(dZ, cache, lambd, regularizer):
+def backward_grad(dZ, cache, lambd, regularizer, l2_m = None):
     """
     
         Example:
@@ -402,7 +406,7 @@ def backward_grad(dZ, cache, lambd, regularizer):
     m = A_prev.shape[1]
     
     if regularizer == "l2":
-        dW = (1/m) * np.dot(dZ,A_prev.T) + np.multiply(np.divide(lambd,m),W )
+        dW = (1/m) * np.dot(dZ,A_prev.T) + np.multiply(np.divide(lambd, l2_m if l2_m else m),W )
     else:
         dW = (1/m) * np.dot(dZ,A_prev.T)
 
@@ -419,7 +423,7 @@ def backward_grad(dZ, cache, lambd, regularizer):
 
 #-------------------------------------------------------------------------------------------------------------------
 ## calculating backward activation
-def backward_activation(dA, cache, lambd ,regularizer, activation):
+def backward_activation(dA, cache, lambd ,regularizer, activation, l2_m = None):
     """
         
         
@@ -468,11 +472,11 @@ def backward_activation(dA, cache, lambd ,regularizer, activation):
     
     if activation == "relu":
         dZ = relu_grad(dA,activation_cache)
-        dA_prev, dW, db = backward_grad(dZ, sum_cache, lambd, regularizer = regularizer)
+        dA_prev, dW, db = backward_grad(dZ, sum_cache, lambd, regularizer = regularizer, l2_m = l2_m)
         
     elif activation == "softmax":
         dZ = dA
-        dA_prev, dW, db = backward_grad(dZ, sum_cache, lambd, regularizer = regularizer)
+        dA_prev, dW, db = backward_grad(dZ, sum_cache, lambd, regularizer = regularizer, l2_m = l2_m)
     
     elif activation == "tanh":
         pass
@@ -492,7 +496,7 @@ def backward_dropout(dA_prev_temp, D, keep_prob):
 
 #-------------------------------------------------------------------------------------------------------------------
 # back prop foL layers
-def backward_prop(AL, Y, caches, dropout_masks = [], keep_probs = [], lambd = 0, regularizer = None):
+def backward_prop(AL, Y, caches, dropout_masks = [], keep_probs = [], lambd = 0, regularizer = None, l2_m = None):
     """
     
         Example:
@@ -542,7 +546,7 @@ def backward_prop(AL, Y, caches, dropout_masks = [], keep_probs = [], lambd = 0,
     
     dA = np.subtract(AL,Y)
     current_cache = caches[L-1]
-    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = backward_activation(dA, current_cache,lambd = lambd, regularizer = regularizer, activation = 'softmax')
+    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = backward_activation(dA, current_cache,lambd = lambd, regularizer = regularizer, activation = 'softmax', l2_m = l2_m)
     
     for l in reversed(range(L-1)):
         current_cache = caches[l]
@@ -551,9 +555,9 @@ def backward_prop(AL, Y, caches, dropout_masks = [], keep_probs = [], lambd = 0,
             #implementing dropout
             D = dropout_masks[l]
             dA_prev_temp = backward_dropout(grads["dA" + str(l + 1)], D, keep_probs[l])
-            dA_prev, dW_temp, db_temp = backward_activation(dA_prev_temp, current_cache, lambd = lambd, regularizer = regularizer, activation = 'relu')
+            dA_prev, dW_temp, db_temp = backward_activation(dA_prev_temp, current_cache, lambd = lambd, regularizer = regularizer, activation = 'relu', l2_m = l2_m)
         else:
-            dA_prev, dW_temp, db_temp = backward_activation(grads["dA" + str(l + 1)], current_cache, lambd = lambd, regularizer = regularizer, activation = 'relu')
+            dA_prev, dW_temp, db_temp = backward_activation(grads["dA" + str(l + 1)], current_cache, lambd = lambd, regularizer = regularizer, activation = 'relu', l2_m = l2_m)
             
         
         grads["dA" + str(l)] = dA_prev
@@ -573,10 +577,10 @@ def initialize_adam(parameters) :
     s = {}
     
     for l in range(L):
-        v["dW" + str(l+1)] = np.zeros(parameters["W" + str(l+1)].shape)
-        v["db" + str(l+1)] = np.zeros(parameters["b" + str(l+1)].shape)
-        s["dW" + str(l+1)] = np.zeros(parameters["W" + str(l+1)].shape)
-        s["db" + str(l+1)] = np.zeros(parameters["b" + str(l+1)].shape)
+        v["dW" + str(l+1)] = np.zeros_like(parameters["W" + str(l+1)])
+        v["db" + str(l+1)] = np.zeros_like(parameters["b" + str(l+1)])
+        s["dW" + str(l+1)] = np.zeros_like(parameters["W" + str(l+1)])
+        s["db" + str(l+1)] = np.zeros_like(parameters["b" + str(l+1)])
     
     return v, s
 #-------------------------------------------------------------------------------------------------------------------
@@ -622,35 +626,32 @@ def update_parameters(parameters, grads, learning_rate, optimizer = "bgd", beta1
                 W2 = [[-0.55569196  0.0354055   1.32964895]]
                 b2 = [[-0.84610769]]
     """
-    L = len(parameters) // 2           
-    v_corrected = {}                         
-    s_corrected = {}                       
-    
-    for l in range(L):
-        if optimizer == 'adam':
-            # Moving average of the gradients.
-            v["dW" + str(l+1)] = np.add(beta1 * v["dW" + str(l+1)], (1 - beta1) * grads["dW" + str(l+1)])
-            v["db" + str(l+1)] = np.add(beta1 * v["db" + str(l+1)], (1 - beta1) * grads["db" + str(l+1)])
-
-            # Compute bias-corrected first moment estimate.
-            v_corrected["dW" + str(l+1)] = np.divide(v["dW" + str(l+1)], (1 - np.power(beta1,t)))
-            v_corrected["db" + str(l+1)] = np.divide(v["db" + str(l+1)], (1 - np.power(beta1,t)))
-
-            # Moving average of the squared gradients. 
-            s["dW" + str(l+1)] = np.add(beta2 * s["dW" + str(l+1)], (1 - beta2) * np.square(grads["dW" + str(l+1)]))
-            s["db" + str(l+1)] = np.add(beta2 * s["db" + str(l+1)], (1 - beta2) * np.square(grads["db" + str(l+1)]))
-
-            # Compute bias-corrected second raw moment estimate. 
-            s_corrected["dW" + str(l+1)] = np.divide(s["dW" + str(l+1)], (1 - np.power(beta2,t)))
-            s_corrected["db" + str(l+1)] = np.divide(s["db" + str(l+1)], (1 - np.power(beta2,t)))
-
-            # Update parameters. 
-            parameters["W" + str(l+1)] = np.subtract(parameters["W" + str(l+1)],  learning_rate * np.divide(v_corrected["dW" + str(l+1)], np.sqrt(s_corrected["dW" + str(l+1)]) + epsilon))
-            parameters["b" + str(l+1)] = np.subtract(parameters["b" + str(l+1)],  learning_rate * np.divide(v_corrected["db" + str(l+1)], np.sqrt(s_corrected["db" + str(l+1)]) + epsilon))
-        else:
-            parameters["W" + str(l+1)] = parameters["W" + str(l+1)] - (learning_rate * grads["dW" + str(l+1)])
-            parameters["b" + str(l+1)] = parameters["b" + str(l+1)] - (learning_rate * grads["db" + str(l+1)])
-            
+    L = len(parameters) // 2
+    # Same Adam update as before, done in place with Python-float coefficients. The old version built six
+    # temporaries per tensor and divided by NumPy float64 scalars, which (NumPy >= 2) silently promoted
+    # float32 parameters to float64. This version is ~3x faster and keeps the parameter dtype.
+    if optimizer == 'adam':
+        c1 = 1.0 - float(beta1) ** t      # bias corrections
+        c2 = 1.0 - float(beta2) ** t
+        for l in range(L):
+            for p_ in ("W", "b"):
+                key, g = "d" + p_ + str(l+1), grads["d" + p_ + str(l+1)]
+                m_, v_ = v[key], s[key]
+                m_ *= beta1; m_ += (1 - beta1) * g               # first moment
+                v_ *= beta2; v_ += (1 - beta2) * np.square(g)    # second moment
+                # Flush tiny moments to zero. For weights whose gradient is (near) zero, e.g. dead ReLU units,
+                # m decays by beta1 every step and enters the float32 subnormal range after ~800 steps; subnormal
+                # arithmetic is 10-100x slower on x86, which made later epochs 2x (L2: up to 17x) slower.
+                # |m| < 1e-30 changes the step by < lr * 1e-22, far below float32 resolution of the weights.
+                m_[np.abs(m_) < 1e-30] = 0
+                v_[v_ < 1e-30] = 0
+                step = (m_ / c1) / (np.sqrt(v_ / c2) + epsilon)
+                step *= learning_rate
+                parameters[p_ + str(l+1)] -= step
+    else:
+        for l in range(L):
+            parameters["W" + str(l+1)] -= learning_rate * grads["dW" + str(l+1)]
+            parameters["b" + str(l+1)] -= learning_rate * grads["db" + str(l+1)]
     return parameters, v, s
 
 #====================================================================================================================
@@ -699,14 +700,34 @@ def evaluate(X, Y, parameters):
     return accuracy, loss
 #====================================================================================================================
 # learning rate scheduling
-def learning_rate_schedule(alpha_prev, epoch, decay_rate = 1 ):
-    alpha = (1/(1 + decay_rate * epoch)) * alpha_prev
-    
-    return alpha
+def learning_rate_schedule(alpha0, epoch, step, gamma = 0.5, min_alpha = 1e-5):
+    """Step decay: multiply the initial learning rate by ``gamma`` every ``step`` epochs.
+
+        The previous schedule computed ``decay_rate = lr / ((i+1)/N)`` and then ``lr/(1+decay_rate*i)``;
+        with lr = 0.001 that lowered the rate by only ~10% over 40 epochs, so it was close to a no-op.
+
+        Example:
+            >>> [learning_rate_schedule(0.001, e, step=10) for e in (0, 9, 10, 25)]
+            [0.001, 0.001, 0.0005, 0.00025]
+    """
+    return max(alpha0 * (gamma ** (epoch // step)), min_alpha)
 #====================================================================================================================
 # Final Model Training
 
-def train(training_data, validation_data , layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None, step_decay = None):
+def train(training_data, validation_data , layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None, step_decay = None, seed = 1, decay_gamma = 0.5, l2_norm = "dataset"):
+    """Train the network with mini-batch optimisation, optional early stopping and step LR decay.
+
+        Arguments (beyond the obvious):
+            seed (int): base seed for the per-epoch mini-batch shuffles (seed*1000 + epoch).
+            step_decay (int): multiply the learning rate by ``decay_gamma`` every ``step_decay`` epochs.
+            l2_norm (str): "dataset" divides lambda by the training-set size (default), "batch" by the
+                mini-batch size, which reproduces the original behaviour.
+
+        The per-batch training accuracy and loss are taken from the forward pass already computed for the
+        gradient (with dropout active), instead of a second forward pass per batch as before. This removes
+        roughly a third of the compute per step; the reported training accuracy is therefore the running
+        accuracy under dropout, as in Keras.
+    """
     # unpacking the hyperparameters
     learning_rate = hyperParams['learning_rate']
     num_epoch = hyperParams['num_epoch']
@@ -732,8 +753,10 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
         max_val_acc = 0 # for keeping track of maximum validation accuracy
     
     #initializing the training variables
-    seed = 1
+    base_seed = int(seed) * 1000
     m = Y_train.shape[1]
+    l2_m = m if (regularizer == "l2" and l2_norm == "dataset") else None
+    alpha0 = learning_rate
     train_accs = []  # for keeping track of training accuracy
     val_accs = []     # for keeping track of Validation accuracy
     train_losses = []  # for keeping track of training loss
@@ -761,7 +784,7 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
     
     #Gradient Descent begins
     for i in range(num_epoch):
-        seed += 1
+        epoch_seed = base_seed + i + 1
         time_trained = 0 # for computing training time of each epoch
         batch_times = [] # for accumulating the training time of each batch
         accs = [] # for tracking batch training accuracy
@@ -769,10 +792,7 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
         
         #learning rate scheduling
         if step_decay!= None and step_decay!= 0:
-            if i%step_decay == 0:
-                decay_rate = learning_rate / ((i+1)/num_epoch)
-                learning_rate = learning_rate_schedule(learning_rate, i, decay_rate)
-                if learning_rate <= 0.0001: learning_rate = 0.0001 
+            learning_rate = learning_rate_schedule(alpha0, i, step_decay, gamma = decay_gamma)
         
            
         if verbose > 0:
@@ -782,7 +802,7 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
                 print("\nEpoch %d/%d"%(i+1,num_epoch))
                 
         #generating minimatches
-        minibatches = rand_mini_batches(X_train, Y_train, mini_batch_size, seed)
+        minibatches = rand_mini_batches(X_train, Y_train, mini_batch_size, epoch_seed)
         total_minibatches = len(minibatches)
         
         for ind, minibatch in enumerate(minibatches):
@@ -795,10 +815,11 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
             AL, caches, dropout_masks = forward_prop(minibatch_X, parameters, keep_probs = keep_probs, regularizer = regularizer)
             
             #Computing cross entropy cost
-            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True) #accumulating the batch costs
+            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True, l2_m = l2_m) #accumulating the batch costs
+            batch_acc = np.mean(np.argmax(AL, axis = 0) == np.argmax(minibatch_Y, axis = 0))
             
             #Backward Propagation
-            grads = backward_prop(AL, minibatch_Y, caches, dropout_masks = dropout_masks, keep_probs = keep_probs, lambd = lambd, regularizer = regularizer)
+            grads = backward_prop(AL, minibatch_Y, caches, dropout_masks = dropout_masks, keep_probs = keep_probs, lambd = lambd, regularizer = regularizer, l2_m = l2_m)
                 
             #Updating parameters
             t += 1
@@ -812,10 +833,9 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
             per = ((ind+1) / total_minibatches) * 100
             inc = int(per // 10) * 2
             
-            #calculating accuracy and loss of the training batch
-            acc,loss = evaluate(minibatch_X, minibatch_Y, parameters)
-            accs.append(acc)
-            losses.append(loss)
+            #accuracy and loss of the training batch, from the forward pass used for the update
+            accs.append(batch_acc)
+            losses.append(float(cross_entropy_cost))
             
             
             #Verbosity 0: Silent mode

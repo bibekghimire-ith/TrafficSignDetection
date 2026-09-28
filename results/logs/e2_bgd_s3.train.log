@@ -1,0 +1,168 @@
+Loading the decoded dataset from cache: dataset/gtsrb/gtsrb_32.npz
+
+Set		Images			Labels
+============================================================
+Training	(34799, 32, 32)	(34799, 1)
+Dev		(4410, 32, 32)	(4410, 1)
+Test		(12630, 32, 32)	(12630, 1)
+============================================================
+
+Network architecture: [1024, 512, 256, 43]
+
+Training The Model...
+
+Epoch 1/40
+1/1 [====================> 100%] - 1.71s | loss: 4.2940 | acc: 0.02451/1 [==================== 100%] - 1.71s 1708ms/step | loss: 4.2940 | acc: 0.0245 | val_loss: 4.1080 | val_acc: 0.0247
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 2/40
+1/1 [====================> 100%] - 1.77s | loss: 4.2820 | acc: 0.02401/1 [==================== 100%] - 1.77s 1771ms/step | loss: 4.2820 | acc: 0.0240 | val_loss: 4.0958 | val_acc: 0.0245
+Epoch 3/40
+1/1 [====================> 100%] - 1.71s | loss: 4.2679 | acc: 0.02481/1 [==================== 100%] - 1.71s 1710ms/step | loss: 4.2679 | acc: 0.0248 | val_loss: 4.0841 | val_acc: 0.0243
+Epoch 4/40
+1/1 [====================> 100%] - 1.76s | loss: 4.2545 | acc: 0.02681/1 [==================== 100%] - 1.76s 1758ms/step | loss: 4.2545 | acc: 0.0268 | val_loss: 4.0727 | val_acc: 0.0240
+Epoch 5/40
+1/1 [====================> 100%] - 1.68s | loss: 4.2406 | acc: 0.02651/1 [==================== 100%] - 1.68s 1682ms/step | loss: 4.2406 | acc: 0.0265 | val_loss: 4.0616 | val_acc: 0.0245
+Epoch 6/40
+1/1 [====================> 100%] - 1.77s | loss: 4.2382 | acc: 0.02631/1 [==================== 100%] - 1.77s 1773ms/step | loss: 4.2382 | acc: 0.0263 | val_loss: 4.0508 | val_acc: 0.0247
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 7/40
+1/1 [====================> 100%] - 1.76s | loss: 4.2203 | acc: 0.02681/1 [==================== 100%] - 1.76s 1763ms/step | loss: 4.2203 | acc: 0.0268 | val_loss: 4.0403 | val_acc: 0.0259
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 8/40
+1/1 [====================> 100%] - 1.76s | loss: 4.2037 | acc: 0.02871/1 [==================== 100%] - 1.76s 1763ms/step | loss: 4.2037 | acc: 0.0287 | val_loss: 4.0301 | val_acc: 0.0265
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 9/40
+1/1 [====================> 100%] - 1.77s | loss: 4.1938 | acc: 0.02871/1 [==================== 100%] - 1.77s 1773ms/step | loss: 4.1938 | acc: 0.0287 | val_loss: 4.0202 | val_acc: 0.0268
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 10/40
+1/1 [====================> 100%] - 1.71s | loss: 4.1867 | acc: 0.02961/1 [==================== 100%] - 1.71s 1707ms/step | loss: 4.1867 | acc: 0.0296 | val_loss: 4.0106 | val_acc: 0.0265
+Epoch 11/40
+1/1 [====================> 100%] - 1.77s | loss: 4.1727 | acc: 0.02951/1 [==================== 100%] - 1.77s 1773ms/step | loss: 4.1727 | acc: 0.0295 | val_loss: 4.0012 | val_acc: 0.0274
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 12/40
+1/1 [====================> 100%] - 1.76s | loss: 4.1557 | acc: 0.02941/1 [==================== 100%] - 1.76s 1764ms/step | loss: 4.1557 | acc: 0.0294 | val_loss: 3.9921 | val_acc: 0.0277
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 13/40
+1/1 [====================> 100%] - 1.79s | loss: 4.1523 | acc: 0.02941/1 [==================== 100%] - 1.79s 1792ms/step | loss: 4.1523 | acc: 0.0294 | val_loss: 3.9832 | val_acc: 0.0277
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 14/40
+1/1 [====================> 100%] - 1.74s | loss: 4.1401 | acc: 0.02951/1 [==================== 100%] - 1.74s 1740ms/step | loss: 4.1401 | acc: 0.0295 | val_loss: 3.9746 | val_acc: 0.0279
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 15/40
+1/1 [====================> 100%] - 1.82s | loss: 4.1356 | acc: 0.03121/1 [==================== 100%] - 1.82s 1824ms/step | loss: 4.1356 | acc: 0.0312 | val_loss: 3.9661 | val_acc: 0.0293
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 16/40
+1/1 [====================> 100%] - 1.76s | loss: 4.1252 | acc: 0.03091/1 [==================== 100%] - 1.76s 1760ms/step | loss: 4.1252 | acc: 0.0309 | val_loss: 3.9578 | val_acc: 0.0302
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 17/40
+1/1 [====================> 100%] - 1.74s | loss: 4.1172 | acc: 0.03111/1 [==================== 100%] - 1.74s 1737ms/step | loss: 4.1172 | acc: 0.0311 | val_loss: 3.9498 | val_acc: 0.0315
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 18/40
+1/1 [====================> 100%] - 1.77s | loss: 4.1105 | acc: 0.03061/1 [==================== 100%] - 1.77s 1768ms/step | loss: 4.1105 | acc: 0.0306 | val_loss: 3.9419 | val_acc: 0.0324
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 19/40
+1/1 [====================> 100%] - 1.79s | loss: 4.0951 | acc: 0.03391/1 [==================== 100%] - 1.79s 1786ms/step | loss: 4.0951 | acc: 0.0339 | val_loss: 3.9342 | val_acc: 0.0338
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 20/40
+1/1 [====================> 100%] - 1.72s | loss: 4.0878 | acc: 0.03311/1 [==================== 100%] - 1.72s 1719ms/step | loss: 4.0878 | acc: 0.0331 | val_loss: 3.9267 | val_acc: 0.0356
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 21/40
+1/1 [====================> 100%] - 1.89s | loss: 4.0845 | acc: 0.03421/1 [==================== 100%] - 1.89s 1894ms/step | loss: 4.0845 | acc: 0.0342 | val_loss: 3.9194 | val_acc: 0.0367
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 22/40
+1/1 [====================> 100%] - 1.82s | loss: 4.0716 | acc: 0.03561/1 [==================== 100%] - 1.82s 1822ms/step | loss: 4.0716 | acc: 0.0356 | val_loss: 3.9123 | val_acc: 0.0383
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 23/40
+1/1 [====================> 100%] - 1.82s | loss: 4.0672 | acc: 0.03621/1 [==================== 100%] - 1.82s 1815ms/step | loss: 4.0672 | acc: 0.0362 | val_loss: 3.9053 | val_acc: 0.0390
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 24/40
+1/1 [====================> 100%] - 1.86s | loss: 4.0572 | acc: 0.03531/1 [==================== 100%] - 1.86s 1864ms/step | loss: 4.0572 | acc: 0.0353 | val_loss: 3.8984 | val_acc: 0.0406
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 25/40
+1/1 [====================> 100%] - 1.83s | loss: 4.0470 | acc: 0.03651/1 [==================== 100%] - 1.83s 1825ms/step | loss: 4.0470 | acc: 0.0365 | val_loss: 3.8917 | val_acc: 0.0408
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 26/40
+1/1 [====================> 100%] - 1.82s | loss: 4.0394 | acc: 0.03601/1 [==================== 100%] - 1.82s 1819ms/step | loss: 4.0394 | acc: 0.0360 | val_loss: 3.8852 | val_acc: 0.0415
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 27/40
+1/1 [====================> 100%] - 1.80s | loss: 4.0397 | acc: 0.03471/1 [==================== 100%] - 1.80s 1799ms/step | loss: 4.0397 | acc: 0.0347 | val_loss: 3.8787 | val_acc: 0.0438
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 28/40
+1/1 [====================> 100%] - 1.69s | loss: 4.0245 | acc: 0.03781/1 [==================== 100%] - 1.69s 1686ms/step | loss: 4.0245 | acc: 0.0378 | val_loss: 3.8724 | val_acc: 0.0456
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 29/40
+1/1 [====================> 100%] - 1.71s | loss: 4.0245 | acc: 0.03801/1 [==================== 100%] - 1.71s 1710ms/step | loss: 4.0245 | acc: 0.0380 | val_loss: 3.8663 | val_acc: 0.0465
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 30/40
+1/1 [====================> 100%] - 1.81s | loss: 4.0091 | acc: 0.03841/1 [==================== 100%] - 1.81s 1808ms/step | loss: 4.0091 | acc: 0.0384 | val_loss: 3.8602 | val_acc: 0.0474
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 31/40
+1/1 [====================> 100%] - 1.75s | loss: 4.0022 | acc: 0.04021/1 [==================== 100%] - 1.75s 1745ms/step | loss: 4.0022 | acc: 0.0402 | val_loss: 3.8543 | val_acc: 0.0478
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 32/40
+1/1 [====================> 100%] - 1.73s | loss: 3.9991 | acc: 0.03991/1 [==================== 100%] - 1.73s 1726ms/step | loss: 3.9991 | acc: 0.0399 | val_loss: 3.8485 | val_acc: 0.0488
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 33/40
+1/1 [====================> 100%] - 1.68s | loss: 3.9992 | acc: 0.03761/1 [==================== 100%] - 1.68s 1684ms/step | loss: 3.9992 | acc: 0.0376 | val_loss: 3.8428 | val_acc: 0.0510
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 34/40
+1/1 [====================> 100%] - 1.82s | loss: 3.9909 | acc: 0.03931/1 [==================== 100%] - 1.82s 1820ms/step | loss: 3.9909 | acc: 0.0393 | val_loss: 3.8373 | val_acc: 0.0533
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 35/40
+1/1 [====================> 100%] - 1.78s | loss: 3.9841 | acc: 0.04091/1 [==================== 100%] - 1.78s 1783ms/step | loss: 3.9841 | acc: 0.0409 | val_loss: 3.8318 | val_acc: 0.0551
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 36/40
+1/1 [====================> 100%] - 1.82s | loss: 3.9733 | acc: 0.04131/1 [==================== 100%] - 1.82s 1816ms/step | loss: 3.9733 | acc: 0.0413 | val_loss: 3.8264 | val_acc: 0.0562
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 37/40
+1/1 [====================> 100%] - 1.81s | loss: 3.9674 | acc: 0.04121/1 [==================== 100%] - 1.81s 1806ms/step | loss: 3.9674 | acc: 0.0412 | val_loss: 3.8212 | val_acc: 0.0576
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 38/40
+1/1 [====================> 100%] - 1.65s | loss: 3.9601 | acc: 0.04321/1 [==================== 100%] - 1.65s 1653ms/step | loss: 3.9601 | acc: 0.0432 | val_loss: 3.8160 | val_acc: 0.0580
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 39/40
+1/1 [====================> 100%] - 1.81s | loss: 3.9552 | acc: 0.04511/1 [==================== 100%] - 1.81s 1811ms/step | loss: 3.9552 | acc: 0.0451 | val_loss: 3.8110 | val_acc: 0.0596
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 40/40
+1/1 [====================> 100%] - 1.81s | loss: 3.9644 | acc: 0.04301/1 [==================== 100%] - 1.81s 1809ms/step | loss: 3.9644 | acc: 0.0430 | val_loss: 3.8060 | val_acc: 0.0610
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+
+Total Training Time = 0hr 1mins 16secs 256.99ms
+
+Model saved to models/e2_bgd_s3
+Final train acc: 0.0430 | dev acc: 0.0610

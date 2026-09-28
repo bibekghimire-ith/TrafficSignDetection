@@ -200,6 +200,25 @@ def preprocess_image(image, roi=None):
     return np.asarray(image, dtype=np.uint8)
 
 
+def _track_id(class_id, filename):
+    """Global id of the physical-sign track a training frame belongs to.
+
+    GTSRB training files are named ``TTTTT_FFFFF.ppm`` (track, frame), and track numbers restart in every
+    class folder, so the class id is folded in to make the id unique.
+    """
+    return class_id * 100000 + int(filename.split("_")[0])
+
+
+def read_train_tracks(path=DATA_ROOT):
+    """Track ids for the training set, in the same order ``retrive_dataset`` decodes the images."""
+    train_root = os.path.join(path, "GTSRB", "Final_Training", "Images")
+    tracks = []
+    for class_id in range(NUM_CLASSES):
+        annotations = os.path.join(train_root, "%05d" % class_id, "GT-%05d.csv" % class_id)
+        tracks.extend(_track_id(class_id, row["Filename"]) for row in _read_annotations(annotations))
+    return np.asarray(tracks, dtype=np.int64).reshape(-1, 1)
+
+
 def retrive_dataset(path=DATA_ROOT):
     """Decode the extracted GTSRB images into NumPy arrays.
 
@@ -257,7 +276,7 @@ def retrive_dataset(path=DATA_ROOT):
 
 
 # ==============================( Sampling from the dataset )==================================
-def sample_dataset(x, y, size_in_per):
+def sample_dataset(x, y, size_in_per, extra=None):
     """Shuffle and return ``size_in_per`` percent of the dataset.
 
         Arguments:
@@ -284,11 +303,13 @@ def sample_dataset(x, y, size_in_per):
     assert (x_sample.shape == (sample_m, IMG_SIZE, IMG_SIZE))
     assert (y_sample.shape == (sample_m, 1))
 
+    if extra is not None:  # e.g. track ids, shuffled with the same permutation
+        return x_sample, y_sample, extra[shuffled][0:sample_m]
     return x_sample, y_sample
 
 
 # ===================================( Loading the dataset )===================================
-def load_dataset(dataset="gtsrb", size_in_per=100, path=DATA_ROOT, use_cache=True):
+def load_dataset(dataset="gtsrb", size_in_per=100, path=DATA_ROOT, use_cache=True, return_tracks=False):
     """Load GTSRB, downloading, extracting and decoding it if needed.
 
         Decoding ~52,000 ``.ppm`` files takes a couple of minutes, so the
@@ -312,29 +333,47 @@ def load_dataset(dataset="gtsrb", size_in_per=100, path=DATA_ROOT, use_cache=Tru
 
     cache = os.path.join(path, "gtsrb_%d.npz" % IMG_SIZE)
 
+    train_tracks = None
     if use_cache and os.path.exists(cache):
         print("Loading the decoded dataset from cache: %s" % cache)
         with np.load(cache) as data:
             train_x, train_y = data["train_x"], data["train_y"]
             test_x, test_y = data["test_x"], data["test_y"]
+            if "train_tracks" in data.files:
+                train_tracks = data["train_tracks"]
+        if train_tracks is None and return_tracks:
+            # cache written by an older version: add the track ids if the extracted images are present
+            if not os.path.exists(os.path.join(path, "GTSRB", "Final_Training", "Images")):
+                raise RuntimeError(
+                    "The cache '%s' has no track ids. Delete it (or run with use_cache=False) so it is "
+                    "rebuilt, or use the random dev split (--split random)." % cache)
+            train_tracks = read_train_tracks(path)
+            np.savez_compressed(cache, train_x=train_x, train_y=train_y, test_x=test_x,
+                                test_y=test_y, train_tracks=train_tracks)
     else:
         if not os.path.exists(os.path.join(path, "GTSRB", "Final_Training", "Images")):
             download_dataset(path)
             decompress_dataset(path)
         train_x, train_y, test_x, test_y = retrive_dataset(path)
+        train_tracks = read_train_tracks(path)
         if use_cache:
             print("Caching the decoded dataset to %s" % cache)
             np.savez_compressed(cache, train_x=train_x, train_y=train_y,
-                                test_x=test_x, test_y=test_y)
+                                test_x=test_x, test_y=test_y, train_tracks=train_tracks)
 
-    train_x_orig, train_y_orig = sample_dataset(train_x, train_y, size_in_per)
+    if return_tracks:
+        train_x_orig, train_y_orig, tracks_orig = sample_dataset(train_x, train_y, size_in_per, extra=train_tracks)
+    else:
+        train_x_orig, train_y_orig = sample_dataset(train_x, train_y, size_in_per)
     test_x_orig, test_y_orig = sample_dataset(test_x, test_y, size_in_per)
 
+    if return_tracks:
+        return train_x_orig, train_y_orig, test_x_orig, test_y_orig, tracks_orig
     return train_x_orig, train_y_orig, test_x_orig, test_y_orig
 
 
 # ========================( Splitting training into train and dev )============================
-def train_dev_split(train_x, train_y, dev_fraction=0.1):
+def train_dev_split(train_x, train_y, dev_fraction=0.1, tracks=None):
     """Randomly split the training set into a training and a development set.
 
         Arguments:
@@ -349,6 +388,8 @@ def train_dev_split(train_x, train_y, dev_fraction=0.1):
             >>> tr_x, tr_y, dev_x, dev_y = train_dev_split(train_x, train_y)
     """
     m = train_y.shape[0]
+    if tracks is not None:
+        return _track_split(train_x, train_y, tracks.reshape(-1), dev_fraction)
     dev_m = int(m * dev_fraction)
 
     shuffled = np.random.permutation(m)
@@ -359,6 +400,32 @@ def train_dev_split(train_x, train_y, dev_fraction=0.1):
     new_train_x, new_train_y = x_shuffled[dev_m:], y_shuffled[dev_m:]
 
     return new_train_x, new_train_y, dev_x, dev_y
+
+
+def _track_split(train_x, train_y, tracks, dev_fraction):
+    """Track-disjoint, class-stratified dev split.
+
+    Every GTSRB physical sign contributes ~30 consecutive, near-identical frames. A random split puts frames
+    of the same sign on both sides and inflates dev accuracy. Here whole tracks are held out: for each class,
+    tracks are drawn in random order until at least ``dev_fraction`` of that class's frames are in dev.
+    """
+    y = train_y.reshape(-1)
+    dev_mask = np.zeros(y.shape[0], dtype=bool)
+    for c in np.unique(y):
+        in_class = y == c
+        class_tracks = np.unique(tracks[in_class])
+        np.random.shuffle(class_tracks)
+        target = max(1, int(round(in_class.sum() * dev_fraction)))
+        taken = 0
+        for t in class_tracks[:-1] if len(class_tracks) > 1 else class_tracks:  # keep >=1 track for training
+            sel = in_class & (tracks == t)
+            dev_mask |= sel
+            taken += sel.sum()
+            if taken >= target:
+                break
+    tr_idx = np.random.permutation(np.where(~dev_mask)[0])
+    dev_idx = np.random.permutation(np.where(dev_mask)[0])
+    return train_x[tr_idx], train_y[tr_idx], train_x[dev_idx], train_y[dev_idx]
 
 
 # ==================================( Label descriptions )=====================================
@@ -442,7 +509,7 @@ def normalize_input(x_flatten):
             >>> train_x_norm = normalize_input(train_x_flatten)
     """
     m = x_flatten.shape[1]
-    x_norm = np.divide(x_flatten, 255.)
+    x_norm = x_flatten.astype(np.float32) / np.float32(255.)  # float32 halves memory; 0-1 range
     assert (x_norm.shape == (NUM_FEATURES, m))
     return x_norm
 
@@ -454,7 +521,7 @@ def one_hot_encoding(y_orig, num_class=NUM_CLASSES):
             >>> train_y_encoded = one_hot_encoding(train_y.T, num_class = 43)
     """
     m = y_orig.shape[1]
-    y_encoded = np.eye(num_class)[y_orig.reshape(-1)].T
+    y_encoded = np.eye(num_class, dtype=np.float32)[y_orig.reshape(-1)].T
     assert (y_encoded.shape == (num_class, m))
     return y_encoded
 

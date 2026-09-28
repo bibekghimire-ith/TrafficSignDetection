@@ -1,0 +1,43 @@
+Loading the decoded dataset from cache: dataset/gtsrb/gtsrb_32.npz
+
+Set		Images			Labels
+============================================================
+Training	(35289, 32, 32)	(35289, 1)
+Dev		(3920, 32, 32)	(3920, 1)
+Test		(12630, 32, 32)	(12630, 1)
+============================================================
+
+Network architecture: [1024, 512, 256, 43]
+
+Training The Model...
+
+Epoch 1/40
+1/1 [====================> 100%] - 2.33s | loss: 4.2601 | acc: 0.00681/1 [==================== 100%] - 2.33s 2334ms/step | loss: 4.2601 | acc: 0.0068 | val_loss: 4.2513 | val_acc: 0.0094
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 2/40
+1/1 [====================> 100%] - 2.23s | loss: 4.2325 | acc: 0.00701/1 [==================== 100%] - 2.23s 2232ms/step | loss: 4.2325 | acc: 0.0070 | val_loss: 4.2242 | val_acc: 0.0099
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 3/40
+1/1 [====================> 100%] - 2.24s | loss: 4.2067 | acc: 0.00721/1 [==================== 100%] - 2.24s 2242ms/step | loss: 4.2067 | acc: 0.0072 | val_loss: 4.1988 | val_acc: 0.0102
+Improvement in validation accuracy found. Saving the corresponding parameters...
+
+Epoch 4/40
+1/1 [====================> 100%] - 2.24s | loss: 4.1822 | acc: 0.00731/1 [==================== 100%] - 2.24s 2244ms/step | loss: 4.1822 | acc: 0.0073 | val_loss: 4.1749 | val_acc: 0.0099
+Epoch 5/40
+1/1 [====================> 100%] - 2.32s | loss: 4.1591 | acc: 0.00741/1 [==================== 100%] - 2.32s 2317ms/step | loss: 4.1591 | acc: 0.0074 | val_loss: 4.1521 | val_acc: 0.0097
+Epoch 6/40
+1/1 [====================> 100%] - 2.20s | loss: 4.1372 | acc: 0.00771/1 [==================== 100%] - 2.20s 2195ms/step | loss: 4.1372 | acc: 0.0077 | val_loss: 4.1306 | val_acc: 0.0097
+Epoch 7/40
+1/1 [====================> 100%] - 2.11s | loss: 4.1164 | acc: 0.00771/1 [==================== 100%] - 2.11s 2111ms/step | loss: 4.1164 | acc: 0.0077 | val_loss: 4.1102 | val_acc: 0.0097
+Epoch 8/40
+1/1 [====================> 100%] - 2.23s | loss: 4.0966 | acc: 0.00811/1 [==================== 100%] - 2.23s 2226ms/step | loss: 4.0966 | acc: 0.0081 | val_loss: 4.0907 | val_acc: 0.0099
+
+Since the Val Acc didn't increase for last 5 epochs, Training is halted returning the best parameters obtained.
+
+
+Total Training Time = 0hr 0mins 23secs 770.04ms
+
+Model saved to models/e2_bgd
+Final train acc: 0.0081 | dev acc: 0.0099

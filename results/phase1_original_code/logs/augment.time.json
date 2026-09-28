@@ -1,0 +1,1 @@
+{"cmd": ["python", "-u", "augment.py", "--aug-count", "1"], "rc": 0, "wall_s": 40.72, "peak_rss_mb": 4544.4}

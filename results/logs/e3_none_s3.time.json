@@ -1,0 +1,1 @@
+{"cmd": ["python", "-u", "train.py", "--epochs", "40", "--no-plot", "--seed", "3", "--out", "models/e3_none_s3", "--regularizer", "none"], "rc": 0, "wall_s": 76.0, "peak_rss_mb": 646.3}

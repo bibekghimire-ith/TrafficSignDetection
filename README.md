@@ -213,7 +213,10 @@ load_dataset → train_dev_split → data_generator()   src/data_augmentation.py
 | Confusion matrix | 10×10, annotated cells | 43×43 heat map, cell text suppressed |
 | GUI input | draw on canvas or upload | upload only (you cannot hand-draw a sign) |
 
-Three latent bugs in the original code were fixed while porting:
+Three latent bugs in the original code were fixed while porting. Seven more were found by the
+experiments and are listed in `REPORT_completed.md` §4.10. These include the L2 normalisation, the
+learning-rate schedule, RNG re-seeding, the track-leaking dev split, float32 memory and speed, and
+subnormal slow-down. The original three were:
 
 - `precision`/`recall`/`f1_score` divided by zero and returned `nan` for any
   class the model never predicted, which poisoned the macro average. With 43
@@ -256,6 +259,22 @@ python gui.py --model models/gtsrb_mlp
 
 `--regularizer` accepts `dropout`, `l2` or `none`. `--optimizer` accepts
 `adam`, `mgd`, `bgd` or `sgd`.
+
+Further training flags:
+
+- `--split track|random` sets the dev split. The default `track` holds out whole physical-sign tracks.
+- `--l2-norm dataset|batch` sets what λ is divided by. The default is the training-set size. `batch` gives the
+  original behaviour.
+- `--step-decay N --decay-gamma G` multiplies the learning rate by G every N epochs.
+- `--seed S` controls initialisation, the split, dropout and augmentation.
+
+```bash
+# tests (stdlib unittest, includes a numerical gradient check)
+python -m unittest discover -s tests -v
+
+# the full thesis experiment plan (18 configurations x 3 seeds), then the analysis
+experiments/run_all.sh && python experiments/analyze.py && python experiments/error_analysis.py
+```
 
 ---
 
